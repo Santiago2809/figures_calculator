@@ -1,0 +1,15 @@
+
+.card {
+    width: 60%;
+    padding: 32px 24px;
+    border-radius: 16px;
+    background-color: #03346E;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    h1 {
+        font-size: 42px;
+        margin-bottom: 24px;
+    }
+}
