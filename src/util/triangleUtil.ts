@@ -1,14 +1,10 @@
+import { returnValue } from "../types";
 
 type inputs = {
     ladoA: FormDataEntryValue
     ladoB: FormDataEntryValue
     ladoC: FormDataEntryValue
-}
-
-export type returnValue = {
-    ok: boolean
-    msg?: string
-}
+}   
 
 export function validateInputs({ ladoA, ladoB, ladoC }: inputs): returnValue {
 
