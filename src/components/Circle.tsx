@@ -1,30 +1,31 @@
+import { SyntheticEvent, useState } from "react";
 import { operation } from "../types";
 import { calculateArea, calculatePerimeter, validateInputs } from "../util/circleUtil";
 import { Button } from "./Button";
 import { Input } from "./Input";
 
 import cs from './Card.module.css'
-import { FormEvent, useState } from "react";
 
 export function Circle() {
     const [formError, setFormError] = useState<string>('')
     const [result, setResult] = useState<string>('')
-    const onSubmit = (e: FormEvent<HTMLFormElement>): void => {
+    const onSubmit = (e: SyntheticEvent<HTMLFormElement, SubmitEvent>): void => {
         e.preventDefault();
 
         if (e.target instanceof HTMLFormElement) {
 
             const formData = new FormData(e.target);
-            const formObj = Object.fromEntries(formData);
-            const isValid = validateInputs(formObj);
+            const { ladoA } = Object.fromEntries(formData);
+            const isValid = validateInputs(ladoA);
             if (isValid.ok) {
                 if (formError) { setFormError('') }
+                if (!e.nativeEvent.submitter) { return; }
                 if (e.nativeEvent.submitter.id === operation.PERIMETER) {
-                    const perimeter = calculatePerimeter(formObj)
+                    const perimeter = calculatePerimeter({ ladoA })
                     setResult(`The circumference of the circle is ${perimeter.toString().includes('.') ? perimeter.toFixed(2) : perimeter}`)
                     // console.log(perimeter)
                 } else if (e.nativeEvent.submitter.id === operation.AREA) {
-                    const area = calculateArea(formObj)
+                    const area = calculateArea({ ladoA })
                     setResult(`The area of the circle is ${area.toString().includes('.') ? area.toFixed(2) : area}`)
                     // console.log(area)
                 }

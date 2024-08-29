@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 
 import { Input } from "./Input";
 import { Button } from './Button';
@@ -10,31 +10,29 @@ export function Triangle() {
 
     const [formError, setFormError] = useState<string>('')
     const [result, setResult] = useState<string>('')
-    const onSubmit = (e: FormEvent<HTMLFormElement>): void => {
+    const onSubmit = (e: SyntheticEvent<HTMLFormElement, SubmitEvent>): void => {
         e.preventDefault();
-        
-        if(e.target instanceof HTMLFormElement ) {
+
+        if (e.target instanceof HTMLFormElement) {
 
             const formData = new FormData(e.target);
-            const formObj = Object.fromEntries(formData);
-            const isValid = validateInputs(formObj);
-            if(isValid.ok){
-                if(formError){ setFormError('')}
-                if(e.nativeEvent.submitter.id === 'perimeter'){
-                    const perimeter = calculatePerimeter(formObj)
+            const { ladoA, ladoB, ladoC } = Object.fromEntries(formData);
+            const isValid = validateInputs({ ladoA, ladoB, ladoC });
+            if (isValid.ok) {
+                if (formError) { setFormError('') }
+                if (!e.nativeEvent.submitter) { return; }
+                if (e.nativeEvent.submitter.id === 'perimeter') {
+                    const perimeter = calculatePerimeter({ ladoA, ladoB, ladoC })
                     setResult(`The perimeter for the triangle is ${perimeter.toString().includes('.') ? perimeter.toFixed(2) : perimeter}`)
                     // console.log(perimeter)
                 } else {
-                    const area = calculateArea(formObj)
+                    const area = calculateArea({ ladoA, ladoB, ladoC })
                     setResult(`The area for the triangle is ${area.toFixed(2)}`)
                     // console.log(area)
                 }
             } else {
                 setResult('')
-                if(isValid.msg instanceof string){
-                    setFormError(isValid.msg)
-
-                }
+                setFormError(isValid.msg)
             }
         }
     }
@@ -47,12 +45,12 @@ export function Triangle() {
                 <Input name="ladoB" id="ladoB" placeholder="41..." labelText="Ingrese el lado B" />
                 <Input name="ladoC" id="ladoC" placeholder="15..." labelText="Ingrese el lado C" />
             </div>
-            { 
+            {
                 result && (
-                    <p style={{fontSize: '24px'}}>{result}</p>
+                    <p style={{ fontSize: '24px' }}>{result}</p>
                 )
             }
-            
+
             <Button id='perimeter'>
                 Calcular Perimetro
             </Button>
@@ -61,7 +59,7 @@ export function Triangle() {
             </Button>
             {
                 formError && (
-                    <p style={{color: 'red', marginTop: '16px'}}>{formError}</p>
+                    <p style={{ color: 'red', marginTop: '16px' }}>{formError}</p>
                 )
             }
         </form>

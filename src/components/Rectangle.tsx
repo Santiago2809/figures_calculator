@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { calculateArea, calculatePerimeter, validateInputs } from "../util/rectangleUtil";
 import { Input } from "./Input";
 
@@ -10,22 +10,23 @@ import { operation } from "../types";
 export function Rectangle() {
     const [formError, setFormError] = useState<string>('')
     const [result, setResult] = useState<string>('')
-    const onSubmit = (e: FormEvent<HTMLFormElement>): void => {
+    const onSubmit = (e: SyntheticEvent<HTMLFormElement, SubmitEvent>): void => {
         e.preventDefault();
 
         if (e.target instanceof HTMLFormElement) {
 
             const formData = new FormData(e.target);
-            const formObj = Object.fromEntries(formData);
-            const isValid = validateInputs(formObj);
+            const { ladoA, ladoB } = Object.fromEntries(formData);
+            const isValid = validateInputs({ ladoA, ladoB });
             if (isValid.ok) {
                 if (formError) { setFormError('') }
+                if (!e.nativeEvent.submitter) { return; }
                 if (e.nativeEvent.submitter.id === operation.PERIMETER) {
-                    const perimeter = calculatePerimeter(formObj)
+                    const perimeter = calculatePerimeter({ ladoA, ladoB })
                     setResult(`The perimeter for the rectangle is ${perimeter.toString().includes('.') ? perimeter.toFixed(2) : perimeter}`)
                     // console.log(perimeter)
                 } else if (e.nativeEvent.submitter.id === operation.AREA) {
-                    const area = calculateArea(formObj)
+                    const area = calculateArea({ ladoA, ladoB })
                     setResult(`The area for the rectangle is ${area.toString().includes('.') ? area.toFixed(2) : area}`)
                     // console.log(area)
                 }
